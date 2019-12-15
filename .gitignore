@@ -1,0 +1,4 @@
+/nvram
+/cfg
+*.bin
+*.o
