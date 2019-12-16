@@ -1,4 +1,4 @@
-# asm68k-megadrive-hellobeef
+# asm68k-megadrive-helloworld
 A simple hello world like project to get up and running with megadrive/genesis
 development
 
