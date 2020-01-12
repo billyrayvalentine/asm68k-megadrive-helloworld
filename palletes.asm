@@ -1,3 +1,19 @@
+Sprite1:
+    .word 0x0080
+	.byte 0x03
+	.byte 0x00
+	.byte 0x00
+	.byte 0x02
+	.word 0x0080
+
+BarSprite:
+    .word 0x00ad
+    .byte 0b1100 /* 1x4 */
+    .byte 0x00  
+    .byte 0x00 
+    .byte 0x08
+    .word 0x0080
+
 Palette0:
    .word 0x0000
    .word 0x0481 
@@ -16,7 +32,7 @@ Palette0:
    .word 0x0600
    .word 0x0060
 
-Tiles:
+TilesLetters:
     .long 0x11000110
     .long 0x11000110
     .long 0x11000110
@@ -79,3 +95,40 @@ Tiles:
     .long 0x11000110
     .long 0x11111110
     .long 0x11111100
+
+TilesBar:
+    .long 0x11111111
+    .long 0x11111111
+    .long 0x11222222
+    .long 0x11222222
+    .long 0x11222222
+    .long 0x11222222
+    .long 0x11111111
+    .long 0x11111111
+
+    .long 0x11111111
+    .long 0x11111111
+    .long 0x22222222
+    .long 0x22222222
+    .long 0x22222222
+    .long 0x22222222
+    .long 0x11111111
+    .long 0x11111111
+
+    .long 0x11111111
+    .long 0x11111111
+    .long 0x22222222
+    .long 0x22222222
+    .long 0x22222222
+    .long 0x22222222
+    .long 0x11111111
+    .long 0x11111111
+    
+    .long 0x11111111
+    .long 0x11111111
+    .long 0x22222211
+    .long 0x22222211
+    .long 0x22222211
+    .long 0x22222211
+    .long 0x11111111
+    .long 0x11111111
