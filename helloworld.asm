@@ -94,7 +94,6 @@ cpu_entrypoint:
  * Joypad values and sprite positions are kept in RAM
  */
 forever:
-    /* 
 
     jsr wait_vblank_start 
     jsr read_controller_1
