@@ -1,11 +1,3 @@
-Sprite1:
-    .word 0x0080
-	.byte 0x03
-	.byte 0x00
-	.byte 0x00
-	.byte 0x02
-	.word 0x0080
-
 BarSprite:
     .word 0x00ad
     .byte 0b1100 /* 1x4 */

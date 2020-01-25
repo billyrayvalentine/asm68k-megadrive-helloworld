@@ -94,3 +94,5 @@ move.l  #0x68000002, VDP_CTRL_PORT
 [https://jakobschmid.tumblr.com/]
 
 [https://cdry.wordpress.com/2017/01/08/a-blast-from-the-past-toc/]
+
+[https://megacatstudios.com/blogs/press/sega-genesis-mega-drive-vdp-graphics-guide-v1-2a-03-14-17]

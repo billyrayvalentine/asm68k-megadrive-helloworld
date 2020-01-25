@@ -62,12 +62,6 @@ cpu_entrypoint:
     * Update plane table B @ 0xE000 
     move.l  #0x60000003, VDP_CTRL_PORT
 
-    move.w  #0x000, VDP_DATA_PORT 
-    move.w  #0x000, VDP_DATA_PORT 
-    move.w  #0x000, VDP_DATA_PORT 
-    move.w  #0x000, VDP_DATA_PORT 
-    move.w  #0x000, VDP_DATA_PORT 
-    move.w  #0x000, VDP_DATA_PORT 
     move.w  #0x005, VDP_DATA_PORT 
     move.w  #0x004, VDP_DATA_PORT 
     move.w  #0x006, VDP_DATA_PORT 
@@ -83,15 +77,25 @@ cpu_entrypoint:
     * Set the initial X and Y positions
     move.w  #128, RAM_SPRITE_TARGET_X
     move.w  #128, RAM_SPRITE_TARGET_Y
-    move.w  #128, d6
-    move.w  #128, d7
 
-    move.l  #0, d4
+    move.w  #128, d6 /* Counter for x  */
+    move.w  #128, d7 /* Counter for y  */
+
+    move.l  #0, d4 /* Counter for x scroll offset */
+    move.l  #0, d5 /* Counter for y scroll offset */
 
 /*
  * Main loop
+ * Wait for the VBLANK to start
+ * Get the input for the joy pad
+ * Move the sprite and the scroll planes
+ * Wait for the VBLANK to end
+ * 
+ * Joypad values and sprite positions are kept in RAM
  */
 forever:
+    /* 
+
     jsr wait_vblank_start 
     jsr read_controller_1
 
@@ -100,7 +104,8 @@ forever:
     beq 1f
    
     * Check the sprite is at the screen boundry, if so skip
-    cmpi.w  #280 + 128 + 8, RAM_SPRITE_TARGET_X
+    * Screen h
+    cmpi.w  #320 + 128 - 32, RAM_SPRITE_TARGET_X
     beq 4f
 
     addi.w  #1, RAM_SPRITE_TARGET_X
@@ -111,7 +116,7 @@ forever:
     btst.b  #2, RAM_CONTROLLER_1
     beq 2f
  
-    * check the sprite is at the screen boundry, if so skip
+    * Check the sprite is at the screen boundry, if so skip
     cmpi.w  #0 + 128, RAM_SPRITE_TARGET_X
     beq 4f
 
@@ -135,8 +140,8 @@ forever:
     btst.b  #1, RAM_CONTROLLER_1
     beq 4f
 
-    * check the sprite is at the screen boundry, if so skip
-    cmpi.w  #216 + 128, RAM_SPRITE_TARGET_Y
+    * Check the sprite is at the screen boundry, if so skip
+    cmpi.w  #224 + 128 - 8, RAM_SPRITE_TARGET_Y
     beq 4f
 
     addi.w  #1, RAM_SPRITE_TARGET_Y
@@ -144,15 +149,25 @@ forever:
 
 4:
     * Update horizontal scroll table @ 0xAC00 and scroll plane A
-    move.l  #0x6C000002, VDP_CTRL_PORT
+    * If the offset is >320 (size of screen width) then reset to 0
+    cmp.w   #320, d4
+    bls.s   1f
+    move.w  #0, d4
+
+1:  move.l  #0x6C000002, VDP_CTRL_PORT
     move.w  d4, VDP_DATA_PORT
 
     * Update vertical scroll table which is in VSRAM 
     * skip the first word as we want to scroll plane B
-    move.l  #0x40020010, VDP_CTRL_PORT
-    move.w  d4, VDP_DATA_PORT
+    cmp.w   #224, d5
+    bls.s   1f
+    move.w  #0, d5
 
-    addi.b  #1, d4
+1:  move.l  #0x40020010, VDP_CTRL_PORT
+    move.w  d5, VDP_DATA_PORT
+
+    add.w  #1, d4
+    add.b  #1, d5
 
 
     jsr update_sprite_table
@@ -185,7 +200,7 @@ read_controller_1:
     lsl.b   #2, d1
     or.b    d1, d0
   
-    * not the bits so that that we have SACBRLDU 
+    * NOT The bits so that that we have SACBRLDU 
     * and a 1 rather than 0 when the bit is set
     * Finally write the value to RAM 
     not    d0
