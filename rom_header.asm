@@ -1,7 +1,7 @@
-/* 
- * rom_header.asm 
+/*
+ * rom_header.asm
  * (c) BillyRayValentine
- * 
+ *
  * Written for use with GNU AS
  * Vector table with interupts - Thanks to Big Evil Corporation for this and
  * most of what is in this file
@@ -72,8 +72,8 @@ rom_start:
     dc.l   int_null             /* Unused (reserved) */
     dc.l   int_null             /* Unused (reserved) */
     dc.l   int_null             /* Unused (reserved) */
-/* 
- * ROM Header - Explained really well here https://www.plutiedev.com/rom-header 
+/*
+ * ROM Header - Explained really well here https://www.plutiedev.com/rom-header
  * For some reason GNU AS won't do dc.b 'STRING' so we have to use .ascii "string"
 */
     .ascii  "SEGA MEGA DRIVE "                                 /* Console name */

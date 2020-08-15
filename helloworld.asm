@@ -1,12 +1,10 @@
-/* 
+/*
  * helloworld.asm
  * (c) BillyRayValentine
  * Written for use with GNU AS
- */
+*/
 
-/*
- * Everything kicks off here.  Must be at 0x200 
- */
+* Everything kicks off here.  Must be at 0x200
 .include "rom_header.asm"
 
 cpu_entrypoint:
@@ -16,16 +14,16 @@ cpu_entrypoint:
     * Initialise joypad 1
     move.b  #0x40, IO_CTRL_PORT1
     move.b  #0x40, IO_DATA_PORT1
-   
+
     * Setup the VDP registers
     jsr     init_vdp
 
     * All the commands to send to the control port can be worked out using the
     * example in the README
-    
-    * Load the palette into CRAM 
+
+    * Load the palette into CRAM
     move.l  #0xC0000000, VDP_CTRL_PORT
-        
+
     lea     Palette0, a0
     moveq   #16-1, d0
 
@@ -42,7 +40,7 @@ cpu_entrypoint:
 1:  move.l  (a0)+, VDP_DATA_PORT
     dbra    d0, 1b
 
-    * Load the bar tiles    
+    * Load the bar tiles
     lea     TilesBar, a0
     moveq   #32-1, d0
 
@@ -52,21 +50,21 @@ cpu_entrypoint:
     * Update plane A table @ 0xC000
     move.l  #0x40000003, VDP_CTRL_PORT
 
-    move.w  #0x001, VDP_DATA_PORT 
-    move.w  #0x002, VDP_DATA_PORT 
-    move.w  #0x003, VDP_DATA_PORT 
-    move.w  #0x003, VDP_DATA_PORT 
-    move.w  #0x004, VDP_DATA_PORT 
-    move.w  #0x000, VDP_DATA_PORT 
+    move.w  #0x001, VDP_DATA_PORT
+    move.w  #0x002, VDP_DATA_PORT
+    move.w  #0x003, VDP_DATA_PORT
+    move.w  #0x003, VDP_DATA_PORT
+    move.w  #0x004, VDP_DATA_PORT
+    move.w  #0x000, VDP_DATA_PORT
 
-    * Update plane table B @ 0xE000 
+    * Update plane table B @ 0xE000
     move.l  #0x60000003, VDP_CTRL_PORT
 
-    move.w  #0x005, VDP_DATA_PORT 
-    move.w  #0x004, VDP_DATA_PORT 
-    move.w  #0x006, VDP_DATA_PORT 
-    move.w  #0x003, VDP_DATA_PORT 
-    move.w  #0x007, VDP_DATA_PORT 
+    move.w  #0x005, VDP_DATA_PORT
+    move.w  #0x004, VDP_DATA_PORT
+    move.w  #0x006, VDP_DATA_PORT
+    move.w  #0x003, VDP_DATA_PORT
+    move.w  #0x007, VDP_DATA_PORT
 
     * Load initial sprite table to 0xAB00
     move.l  #0x68000002, VDP_CTRL_PORT
@@ -90,18 +88,18 @@ cpu_entrypoint:
  * Get the input for the joy pad
  * Move the sprite and the scroll planes
  * Wait for the VBLANK to end
- * 
+ *
  * Joypad values and sprite positions are kept in RAM
- */
+*/
 forever:
 
-    jsr wait_vblank_start 
+    jsr wait_vblank_start
     jsr read_controller_1
 
     * If right then move sprite right
     btst.b  #3, RAM_CONTROLLER_1
     beq 1f
-   
+
     * Check the sprite is at the screen boundry, if so skip
     * Screen h
     cmpi.w  #320 + 128 - 32, RAM_SPRITE_TARGET_X
@@ -110,11 +108,10 @@ forever:
     addi.w  #1, RAM_SPRITE_TARGET_X
     addi.w  #1, d6
 
-1:
     * If left then move sprite left
-    btst.b  #2, RAM_CONTROLLER_1
+1:  btst.b  #2, RAM_CONTROLLER_1
     beq 2f
- 
+
     * Check the sprite is at the screen boundry, if so skip
     cmpi.w  #0 + 128, RAM_SPRITE_TARGET_X
     beq 4f
@@ -122,11 +119,11 @@ forever:
     subi.w  #1, RAM_SPRITE_TARGET_X
     subi.w  #1, d6
 
-2:
+
     * If up then move the sprite up
-    btst.b  #0, RAM_CONTROLLER_1
+2:  btst.b  #0, RAM_CONTROLLER_1
     beq 3f
-    
+
     * check the sprite is at the screen boundry, if so skip
     cmpi.w  #0 + 128, RAM_SPRITE_TARGET_Y
     beq 4f
@@ -134,9 +131,9 @@ forever:
     subi.w  #1, RAM_SPRITE_TARGET_Y
     subi.w  #1, d7
 
-3:
+
     * If down then move the sprite down
-    btst.b  #1, RAM_CONTROLLER_1
+3:  btst.b  #1, RAM_CONTROLLER_1
     beq 4f
 
     * Check the sprite is at the screen boundry, if so skip
@@ -146,17 +143,17 @@ forever:
     addi.w  #1, RAM_SPRITE_TARGET_Y
     addi.w  #1, d7
 
-4:
+
     * Update horizontal scroll table @ 0xAC00 and scroll plane A
     * If the offset is >320 (size of screen width) then reset to 0
-    cmp.w   #320, d4
+4:  cmp.w   #320, d4
     bls.s   1f
     move.w  #0, d4
 
 1:  move.l  #0x6C000002, VDP_CTRL_PORT
     move.w  d4, VDP_DATA_PORT
 
-    * Update vertical scroll table which is in VSRAM 
+    * Update vertical scroll table which is in VSRAM
     * skip the first word as we want to scroll plane B
     cmp.w   #224, d5
     bls.s   1f
@@ -167,7 +164,6 @@ forever:
 
     add.w  #1, d4
     add.b  #1, d5
-
 
     jsr update_sprite_table
     jsr wait_vblank_end
@@ -190,18 +186,18 @@ read_controller_1:
     move.b  (a0), d0
 
     move.b  #0x00, (a0)
-    nop 
+    nop
     nop
     move.b  (a0), d1
-    
+
     andi.b  #0x3f, d0
     andi.b  #0x30, d1
     lsl.b   #2, d1
     or.b    d1, d0
-  
-    * NOT The bits so that that we have SACBRLDU 
+
+    * NOT The bits so that that we have SACBRLDU
     * and a 1 rather than 0 when the bit is set
-    * Finally write the value to RAM 
+    * Finally write the value to RAM
     not    d0
     move.b d0, RAM_CONTROLLER_1
     rts
@@ -209,7 +205,7 @@ read_controller_1:
 wait_vblank_start:
     * Bit 4 of the VDP register is set to 1 when the vblanking is in progress
     * Keep looping until this is set
-    * The VDP register can be read simply by reading from the control port 
+    * The VDP register can be read simply by reading from the control port
     * address
     move.w  VDP_CTRL_PORT, d0
     btst.b  #4-1, d0
@@ -228,9 +224,9 @@ wait_vblank_end:
 .include "tmss.asm"
 .include "palletes.asm"
 
-/* 
+/*
  * Interupt handler
- */
+*/
 cpu_exception:
     rte
 int_null:
