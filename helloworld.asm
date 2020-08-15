@@ -176,6 +176,7 @@ update_sprite_table:
     move.w  #0x0C00, VDP_DATA_PORT
     move.w  #0x0008, VDP_DATA_PORT
     move.w  RAM_SPRITE_TARGET_X, VDP_DATA_PORT
+    rts
 
 read_controller_1:
     * Read controller 1 input into $FF0000
