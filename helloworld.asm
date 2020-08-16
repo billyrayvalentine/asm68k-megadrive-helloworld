@@ -1,7 +1,11 @@
 /*
  * helloworld.asm
- * (c) BillyRayValentine
  * Written for use with GNU AS
+
+ * Copyright © 2020 Ben Sampson <github.com/billyrayvalentine>
+ * This work is free. You can redistribute it and/or modify it under the
+ * terms of the Do What The Fuck You Want To Public License, Version 2,
+ * as published by Sam Hocevar. See the COPYING file for more details.
 */
 
 * Everything kicks off here.  Must be at 0x200
@@ -100,7 +104,7 @@ forever:
     btst.b  #3, RAM_CONTROLLER_1
     beq 1f
 
-    * Check the sprite is at the screen boundry, if so skip
+    * Check the sprite is at the screen boundary, if so skip
     * Screen h
     cmpi.w  #320 + 128 - 32, RAM_SPRITE_TARGET_X
     beq 4f
@@ -112,7 +116,7 @@ forever:
 1:  btst.b  #2, RAM_CONTROLLER_1
     beq 2f
 
-    * Check the sprite is at the screen boundry, if so skip
+    * Check the sprite is at the screen boundary, if so skip
     cmpi.w  #0 + 128, RAM_SPRITE_TARGET_X
     beq 4f
 
@@ -124,7 +128,7 @@ forever:
 2:  btst.b  #0, RAM_CONTROLLER_1
     beq 3f
 
-    * check the sprite is at the screen boundry, if so skip
+    * check the sprite is at the screen boundary, if so skip
     cmpi.w  #0 + 128, RAM_SPRITE_TARGET_Y
     beq 4f
 
@@ -136,7 +140,7 @@ forever:
 3:  btst.b  #1, RAM_CONTROLLER_1
     beq 4f
 
-    * Check the sprite is at the screen boundry, if so skip
+    * Check the sprite is at the screen boundary, if so skip
     cmpi.w  #224 + 128 - 8, RAM_SPRITE_TARGET_Y
     beq 4f
 
@@ -226,7 +230,7 @@ wait_vblank_end:
 .include "palletes.asm"
 
 /*
- * Interupt handler
+ * Interrupt handler
 */
 cpu_exception:
     rte

@@ -1,9 +1,13 @@
 /*
  * rom_header.asm
- * (c) BillyRayValentine
- *
  * Written for use with GNU AS
- * Vector table with interupts - Thanks to Big Evil Corporation for this and
+ *
+ * Copyright © 2020 Ben Sampson <github.com/billyrayvalentine>
+ * This work is free. You can redistribute it and/or modify it under the
+ * terms of the Do What The Fuck You Want To Public License, Version 2,
+ * as published by Sam Hocevar. See the COPYING file for more details.
+ *
+ * Vector table with interrupts - Thanks to Big Evil Corporation for this and
  * most of what is in this file
  * https://github.com/BigEvilCorporation
 */
