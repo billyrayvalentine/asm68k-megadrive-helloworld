@@ -31,10 +31,10 @@ init_vdp:
     move.w  #VDP_REG_BGCOL      | 0b00000000, (a0)
     move.w  #VDP_REG_H_INT      | 0b00001000, (a0)
     move.w  #VDP_REG_MODE3      | 0b00000000, (a0)
-    move.w  #VDP_REG_MODE4      | 0b10000001, (a0) /* 40 H40 mode */
+    move.w  #VDP_REG_MODE4      | 0b00000000, (a0) /* 40 H40 mode */
     move.w  #VDP_REG_HSCROLL    | 0x2b, (a0) /* 0xAC00 */
     move.w  #VDP_REG_INCR       | 0b00000010, (a0) /* 0x02 */
-    move.w  #VDP_REG_SIZE       | 0b00000001, (a0) /* 32x64 tiles */
+    move.w  #VDP_REG_SIZE       | 0b00000000, (a0) /* 32x64 tiles */
     move.w  #VDP_REG_WINX       | 0b00000000, (a0)
     move.w  #VDP_REG_WINY       | 0b00000000, (a0)
 

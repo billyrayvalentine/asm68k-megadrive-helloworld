@@ -28,7 +28,7 @@ cpu_entrypoint:
     * Load the palette into CRAM
     move.l  #0xC0000000, VDP_CTRL_PORT
 
-    lea     BRPalette0, a0
+    lea     CMPalette0, a0
     moveq   #16-1, d0
 
 1:  move.w  (a0)+, VDP_DATA_PORT
@@ -39,8 +39,8 @@ cpu_entrypoint:
     move.l  #0x40200000, VDP_CTRL_PORT
 
     * Load the bar tiles
-    lea     BRImage0, a0
-    moveq   #72-1, d0
+    lea     CMImage0, a0
+    move.w   #5120-1, d0
 
 1:  move.l  (a0)+, VDP_DATA_PORT
     dbra    d0, 1b
@@ -49,73 +49,14 @@ cpu_entrypoint:
     * Update plane table B @ 0xE000
     move.l  #0x60000003, VDP_CTRL_PORT
 
-    move.w  #0x001, VDP_DATA_PORT
-    move.w  #0x002, VDP_DATA_PORT
-    move.w  #0x003, VDP_DATA_PORT
-    move.w  #0x000, VDP_DATA_PORT
-    move.w  #0x000, VDP_DATA_PORT
-    move.w  #0x000, VDP_DATA_PORT
-    move.w  #0x000, VDP_DATA_PORT
-    move.w  #0x000, VDP_DATA_PORT
-    move.w  #0x000, VDP_DATA_PORT
-    move.w  #0x000, VDP_DATA_PORT
-    move.w  #0x000, VDP_DATA_PORT
-    move.w  #0x000, VDP_DATA_PORT
-    move.w  #0x000, VDP_DATA_PORT
-    move.w  #0x000, VDP_DATA_PORT
-    move.w  #0x000, VDP_DATA_PORT
-    move.w  #0x000, VDP_DATA_PORT
-    move.w  #0x000, VDP_DATA_PORT
-    move.w  #0x000, VDP_DATA_PORT
-    move.w  #0x000, VDP_DATA_PORT
-    move.w  #0x000, VDP_DATA_PORT
-    move.w  #0x000, VDP_DATA_PORT
-    move.w  #0x000, VDP_DATA_PORT
-    move.w  #0x000, VDP_DATA_PORT
-    move.w  #0x000, VDP_DATA_PORT
-    move.w  #0x000, VDP_DATA_PORT
-    move.w  #0x000, VDP_DATA_PORT
-    move.w  #0x000, VDP_DATA_PORT
-    move.w  #0x000, VDP_DATA_PORT
-    move.w  #0x000, VDP_DATA_PORT
-    move.w  #0x000, VDP_DATA_PORT
-    move.w  #0x000, VDP_DATA_PORT
-    move.w  #0x000, VDP_DATA_PORT
-    move.w  #0x000, VDP_DATA_PORT
-    move.w  #0x000, VDP_DATA_PORT
-    move.w  #0x000, VDP_DATA_PORT
-    move.w  #0x000, VDP_DATA_PORT
-    move.w  #0x000, VDP_DATA_PORT
-    move.w  #0x000, VDP_DATA_PORT
-    move.w  #0x000, VDP_DATA_PORT
-    move.w  #0x000, VDP_DATA_PORT
-    move.w  #0x000, VDP_DATA_PORT
-    move.w  #0x000, VDP_DATA_PORT
-    move.w  #0x000, VDP_DATA_PORT
-    move.w  #0x000, VDP_DATA_PORT
-    move.w  #0x000, VDP_DATA_PORT
-    move.w  #0x000, VDP_DATA_PORT
-    move.w  #0x000, VDP_DATA_PORT
-    move.w  #0x000, VDP_DATA_PORT
-    move.w  #0x000, VDP_DATA_PORT
-    move.w  #0x000, VDP_DATA_PORT
-    move.w  #0x000, VDP_DATA_PORT
-    move.w  #0x000, VDP_DATA_PORT
-    move.w  #0x000, VDP_DATA_PORT
-    move.w  #0x000, VDP_DATA_PORT
-    move.w  #0x000, VDP_DATA_PORT
-    move.w  #0x000, VDP_DATA_PORT
-    move.w  #0x000, VDP_DATA_PORT
-    move.w  #0x000, VDP_DATA_PORT
-    move.w  #0x000, VDP_DATA_PORT
-    move.w  #0x000, VDP_DATA_PORT
-    move.w  #0x000, VDP_DATA_PORT
-    move.w  #0x000, VDP_DATA_PORT
-    move.w  #0x000, VDP_DATA_PORT
-    move.w  #0x000, VDP_DATA_PORT
-    move.w  #0x004, VDP_DATA_PORT
-    move.w  #0x005, VDP_DATA_PORT
-    move.w  #0x006, VDP_DATA_PORT
+    * load 640 tiles
+    move.w  #0x0000, d1
+1:  move.w  d1, VDP_DATA_PORT
+    addq    #1, d1
+    cmpi.w  #640, d1
+    bne     1b
+
+
 
 /*
  * Main loop
@@ -188,6 +129,7 @@ wait_vblank_end:
 .include "tmss.asm"
 .include "palletes.asm"
 .include "brhead24.asm"
+.include "compass.asm"
 
 /*
  * Interrupt handler
